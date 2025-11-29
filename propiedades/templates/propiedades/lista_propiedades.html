@@ -1,0 +1,286 @@
+{% extends 'propiedades/base.html' %}
+
+{% block title %}Listado de Propiedades - Sistema Inmobiliario{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filters {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .filters h2 {
+        color: #667eea;
+        margin-bottom: 15px;
+    }
+
+    .filter-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .filter-group select {
+        padding: 8px 15px;
+        border: 2px solid #667eea;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .filter-group button {
+        padding: 8px 20px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .filter-group button:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+    }
+
+    .propiedades-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    .propiedad-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s;
+        background: white;
+    }
+
+    .propiedad-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        border-color: #667eea;
+    }
+
+    .propiedad-imagen {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3em;
+    }
+
+    .propiedad-imagen img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .propiedad-info {
+        padding: 20px;
+    }
+
+    .propiedad-titulo {
+        font-size: 1.3em;
+        color: #333;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .propiedad-tipo {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        margin-bottom: 10px;
+    }
+
+    .propiedad-precio {
+        font-size: 1.5em;
+        color: #764ba2;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+
+    .propiedad-detalles {
+        display: flex;
+        gap: 15px;
+        margin: 15px 0;
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    .propiedad-detalles span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .propiedad-ubicacion {
+        color: #666;
+        font-size: 0.9em;
+        margin: 10px 0;
+    }
+
+    .propiedad-estado {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 5px;
+        font-size: 0.85em;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .estado-disponible {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .estado-vendida {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .estado-alquilada {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .estado-reservada {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .btn-ver-mas {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.3s;
+        font-weight: 600;
+    }
+
+    .btn-ver-mas:hover {
+        background: #764ba2;
+        transform: translateX(5px);
+    }
+
+    .no-propiedades {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 1.2em;
+    }
+
+    .destacada-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ffc107;
+        color: #000;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="color: #667eea; margin-bottom: 20px;">📋 Listado de Propiedades</h1>
+
+<div class="filters">
+    <h2>🔍 Filtros de Búsqueda</h2>
+    <form method="get" class="filter-group">
+        <label for="tipo">Tipo de Propiedad:</label>
+        <select name="tipo" id="tipo">
+            <option value="">Todos</option>
+            {% for tipo in tipos %}
+            <option value="{{ tipo.id }}" {% if tipo.id|stringformat:"s"==tipo_seleccionado %}selected{% endif %}>
+                {{ tipo.nombre }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="estado">Estado:</label>
+        <select name="estado" id="estado">
+            <option value="">Todos</option>
+            <option value="disponible" {% if estado_seleccionado=='disponible' %}selected{% endif %}>Disponible</option>
+            <option value="vendida" {% if estado_seleccionado=='vendida' %}selected{% endif %}>Vendida</option>
+            <option value="alquilada" {% if estado_seleccionado=='alquilada' %}selected{% endif %}>Alquilada</option>
+            <option value="reservada" {% if estado_seleccionado=='reservada' %}selected{% endif %}>Reservada</option>
+        </select>
+
+        <button type="submit">Buscar</button>
+    </form>
+</div>
+
+{% if propiedades %}
+<p style="color: #666; margin-bottom: 20px;">Se encontraron <strong>{{ propiedades.count }}</strong> propiedades</p>
+
+<div class="propiedades-grid">
+    {% for propiedad in propiedades %}
+    <div class="propiedad-card" style="position: relative;">
+        {% if propiedad.destacada %}
+        <div class="destacada-badge">⭐ DESTACADA</div>
+        {% endif %}
+
+        <div class="propiedad-imagen">
+            {% if propiedad.imagen %}
+            <img src="{{ propiedad.imagen.url }}" alt="{{ propiedad.titulo }}">
+            {% else %}
+            🏠
+            {% endif %}
+        </div>
+
+        <div class="propiedad-info">
+            <span class="propiedad-tipo">{{ propiedad.tipo.nombre }}</span>
+            <h3 class="propiedad-titulo">{{ propiedad.titulo }}</h3>
+
+            <p class="propiedad-precio">${{ propiedad.precio|floatformat:2 }}</p>
+
+            <div class="propiedad-detalles">
+                <span>🛏️ {{ propiedad.habitaciones }} hab.</span>
+                <span>🚿 {{ propiedad.baños }} baños</span>
+                <span>📐 {{ propiedad.area_metros }} m²</span>
+            </div>
+
+            <p class="propiedad-ubicacion">📍 {{ propiedad.ubicacion }}</p>
+
+            <span class="propiedad-estado estado-{{ propiedad.estado }}">
+                {{ propiedad.get_estado_display }}
+            </span>
+
+            <a href="{% url 'propiedades:detalle_propiedad' propiedad.pk %}" class="btn-ver-mas">
+                Ver Detalles →
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-propiedades">
+    <p>😔 No se encontraron propiedades con los filtros seleccionados.</p>
+    <p><a href="{% url 'propiedades:lista_propiedades' %}" style="color: #667eea;">Ver todas las propiedades</a></p>
+</div>
+{% endif %}
+{% endblock %}
