@@ -15,20 +15,28 @@ Sistema web de gestión inmobiliaria desarrollado con Django como parte del Mód
 - Entorno virtual creado con `venv`
 - Dependencias aisladas del sistema
 
+![Creación del Entorno Virtual](docs/images/venv_creation.png)
+
 ### C. Control de Versiones
 - Repositorio Git inicializado
 - Archivo `.gitignore` configurado
 - Conectado a GitHub
+
+![Configuración de Git](docs/images/git_config.png)
 
 ### D. Framework Django
 - Django instalado y configurado
 - Proyecto: `inmobiliaria_project`
 - Aplicación: `propiedades`
 
+![Instalación de Django](docs/images/django_installation.png)
+
 ### E. Proyecto Django
 - Configuración en español (es-ve)
 - Zona horaria: America/Caracas
 - Base de datos SQLite3
+
+![Creación del Proyecto Django](docs/images/django_project.png)
 
 ### F. Aplicación Web
 - Aplicación `propiedades` creada y registrada
@@ -146,6 +154,8 @@ python manage.py createsuperuser
 ```bash
 python manage.py runserver
 ```
+
+![Servidor de Desarrollo](docs/images/django_runserver.png)
 
 ### 7. Acceder a la aplicación
 - Sitio web: http://127.0.0.1:8000/
