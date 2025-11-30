@@ -14,6 +14,10 @@ def lista_propiedades(request):
     
     if tipo_filtro:
         propiedades = propiedades.filter(tipo__id=tipo_filtro)
+        try:
+            tipo_filtro = int(tipo_filtro)
+        except ValueError:
+            pass
     
     if estado_filtro:
         propiedades = propiedades.filter(estado=estado_filtro)
@@ -25,7 +29,7 @@ def lista_propiedades(request):
         'estado_seleccionado': estado_filtro,
     }
     
-    return render(request, 'propiedades/lista_propiedades.html', context)
+    return render(request, 'propiedades/lista_propiedades_v2.html', context)
 
 
 def detalle_propiedad(request, pk):

@@ -209,78 +209,53 @@
 <h1 style="color: #667eea; margin-bottom: 20px;">📋 Listado de Propiedades</h1>
 
 <div class="filters">
-    <h2>🔍 Filtros de Búsqueda</h2>
-    <form method="get" class="filter-group">
-        <label for="tipo">Tipo de Propiedad:</label>
-        <select name="tipo" id="tipo">
-            <option value="">Todos</option>
-            {% for tipo in tipos %}
-            <option value="{{ tipo.id }}" {% if tipo.id|stringformat:"s"==tipo_seleccionado %}selected{% endif %}>
-                {{ tipo.nombre }}
-            </option>
-            {% endfor %}
-        </select>
+    {% if propiedades %}
+    <p style="color: #666; margin-bottom: 20px;">Se encontraron <strong>{{ propiedades.count }}</strong> propiedades</p>
 
-        <label for="estado">Estado:</label>
-        <select name="estado" id="estado">
-            <option value="">Todos</option>
-            <option value="disponible" {% if estado_seleccionado=='disponible' %}selected{% endif %}>Disponible</option>
-            <option value="vendida" {% if estado_seleccionado=='vendida' %}selected{% endif %}>Vendida</option>
-            <option value="alquilada" {% if estado_seleccionado=='alquilada' %}selected{% endif %}>Alquilada</option>
-            <option value="reservada" {% if estado_seleccionado=='reservada' %}selected{% endif %}>Reservada</option>
-        </select>
-
-        <button type="submit">Buscar</button>
-    </form>
-</div>
-
-{% if propiedades %}
-<p style="color: #666; margin-bottom: 20px;">Se encontraron <strong>{{ propiedades.count }}</strong> propiedades</p>
-
-<div class="propiedades-grid">
-    {% for propiedad in propiedades %}
-    <div class="propiedad-card" style="position: relative;">
-        {% if propiedad.destacada %}
-        <div class="destacada-badge">⭐ DESTACADA</div>
-        {% endif %}
-
-        <div class="propiedad-imagen">
-            {% if propiedad.imagen %}
-            <img src="{{ propiedad.imagen.url }}" alt="{{ propiedad.titulo }}">
-            {% else %}
-            🏠
+    <div class="propiedades-grid">
+        {% for propiedad in propiedades %}
+        <div class="propiedad-card" style="position: relative;">
+            {% if propiedad.destacada %}
+            <div class="destacada-badge">⭐ DESTACADA</div>
             {% endif %}
-        </div>
 
-        <div class="propiedad-info">
-            <span class="propiedad-tipo">{{ propiedad.tipo.nombre }}</span>
-            <h3 class="propiedad-titulo">{{ propiedad.titulo }}</h3>
-
-            <p class="propiedad-precio">${{ propiedad.precio|floatformat:2 }}</p>
-
-            <div class="propiedad-detalles">
-                <span>🛏️ {{ propiedad.habitaciones }} hab.</span>
-                <span>🚿 {{ propiedad.baños }} baños</span>
-                <span>📐 {{ propiedad.area_metros }} m²</span>
+            <div class="propiedad-imagen">
+                {% if propiedad.imagen %}
+                <img src="{{ propiedad.imagen.url }}" alt="{{ propiedad.titulo }}">
+                {% else %}
+                🏠
+                {% endif %}
             </div>
 
-            <p class="propiedad-ubicacion">📍 {{ propiedad.ubicacion }}</p>
+            <div class="propiedad-info">
+                <span class="propiedad-tipo">{{ propiedad.tipo.nombre }}</span>
+                <h3 class="propiedad-titulo">{{ propiedad.titulo }}</h3>
 
-            <span class="propiedad-estado estado-{{ propiedad.estado }}">
-                {{ propiedad.get_estado_display }}
-            </span>
+                <p class="propiedad-precio">${{ propiedad.precio|floatformat:2 }}</p>
 
-            <a href="{% url 'propiedades:detalle_propiedad' propiedad.pk %}" class="btn-ver-mas">
-                Ver Detalles →
-            </a>
+                <div class="propiedad-detalles">
+                    <span>🛏️ {{ propiedad.habitaciones }} hab.</span>
+                    <span>🚿 {{ propiedad.baños }} baños</span>
+                    <span>📐 {{ propiedad.area_metros }} m²</span>
+                </div>
+
+                <p class="propiedad-ubicacion">📍 {{ propiedad.ubicacion }}</p>
+
+                <span class="propiedad-estado estado-{{ propiedad.estado }}">
+                    {{ propiedad.get_estado_display }}
+                </span>
+
+                <a href="{% url 'propiedades:detalle_propiedad' propiedad.pk %}" class="btn-ver-mas">
+                    Ver Detalles →
+                </a>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-{% else %}
-<div class="no-propiedades">
-    <p>😔 No se encontraron propiedades con los filtros seleccionados.</p>
-    <p><a href="{% url 'propiedades:lista_propiedades' %}" style="color: #667eea;">Ver todas las propiedades</a></p>
-</div>
-{% endif %}
-{% endblock %}
+    {% else %}
+    <div class="no-propiedades">
+        <p>😔 No se encontraron propiedades con los filtros seleccionados.</p>
+        <p><a href="{% url 'propiedades:lista_propiedades' %}" style="color: #667eea;">Ver todas las propiedades</a></p>
+    </div>
+    {% endif %}
+    {% endblock %}
